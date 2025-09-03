@@ -1,0 +1,12 @@
+lib
+node_modules
+.env.test
+pnpm-debug.log*
+.pnpm-store
+.cache
+.DS_Store
+Thumbs.db
+_test
+.userdata
+doc_build
+coverage

@@ -1,0 +1,27 @@
+{
+  "name": "fileserver-docker",
+  "version": "0.0.1",
+  "description": "fileserver-docker",
+  "main": "./lib/index.js",
+  "scripts": {
+    "serve": "node ./lib/index.js",
+    "dev": "npm run clean && tsc --sourceMap -w",
+    "clean": "rimraf lib",
+    "build": "npm run clean && tsc -p .",
+    "docker:build": "docker build  . --no-cache -t chrissong1994/filerserver:latest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.12.3",
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "rimraf": "^6.0.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "serve-static": "^2.2.0"
+  }
+}
