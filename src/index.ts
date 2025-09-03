@@ -1,6 +1,7 @@
 import express from "express";
 import serveStatic from "serve-static";
 import path from "path";
+import fs from "fs";
 import { exec } from "child_process";
 
 // 从环境变量获取配置，默认值为当前目录下的public文件夹
@@ -28,11 +29,19 @@ app.use(
 );
 
 // 相当于 Nginx 的 try_files $uri $uri/ /index.html;
-app.get(/(.*)/, (req, res) => {
-  const indexPath = path.join(STATIC_DIR, "index.html");
+app.get(/(.*)/, async (req, res) => {
+  let htmlPath = path.join(STATIC_DIR, req.url);
+  const htmlPaths = getHtmlPath(htmlPath, path.join(STATIC_DIR, "index.html"));
+
+  for (const path of htmlPaths) {
+    if (fs.existsSync(path)) {
+      htmlPath = path;
+      break;
+    }
+  }
 
   // 检查 index.html 是否存在
-  res.sendFile(indexPath, (err) => {
+  res.sendFile(htmlPath, (err) => {
     if (err) {
       // 如果 index.html 也不存在，返回 404
       res.status(404).send("Not Found: index.html missing in static directory");
@@ -40,11 +49,14 @@ app.get(/(.*)/, (req, res) => {
   });
 });
 
-// try_file
-// app.get("*", (req, res) => {
-//   res.sendFile(path.join(STATIC_DIR, "index.html"));
-// });
-
 app.listen(3080, () => {
   console.log(`Static server running at http://localhost:3080`);
 });
+
+function getHtmlPath(url: string, fallbackUrl: string) {
+  if (!url.endsWith("/")) return [];
+  const pathName = url.endsWith("/") ? url.slice(0, -1) : url;
+  const urlHtmlPath = `${pathName}.html`;
+
+  return [url, urlHtmlPath, fallbackUrl];
+}
