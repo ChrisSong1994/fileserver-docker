@@ -10,3 +10,4 @@ _test
 .userdata
 doc_build
 coverage
+statics

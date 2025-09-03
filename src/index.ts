@@ -28,9 +28,10 @@ app.use(
   })
 );
 
-// 相当于 Nginx 的 try_files $uri $uri/ /index.html;
+// try_files
 app.get(/(.*)/, async (req, res) => {
-  let htmlPath = path.join(STATIC_DIR, req.url);
+  const { pathname } = req._parsedUrl;
+  let htmlPath = path.join(STATIC_DIR, decodeURIComponent(pathname));
   const htmlPaths = getHtmlPath(htmlPath, path.join(STATIC_DIR, "index.html"));
 
   for (const path of htmlPaths) {
@@ -54,7 +55,6 @@ app.listen(3080, () => {
 });
 
 function getHtmlPath(url: string, fallbackUrl: string) {
-  if (!url.endsWith("/")) return [];
   const pathName = url.endsWith("/") ? url.slice(0, -1) : url;
   const urlHtmlPath = `${pathName}.html`;
 
