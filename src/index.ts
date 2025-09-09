@@ -24,7 +24,7 @@ if (!STATIC_DIR) {
 
 app.use(
   serveStatic(STATIC_DIR, {
-    index: ["index.html", "index.htm"],
+    index: ["index.html", "index.htm"], // 默认找到文件夹下的 index.html 文件
   })
 );
 
@@ -33,6 +33,8 @@ app.get(/(.*)/, async (req, res) => {
   const { pathname } = req._parsedUrl;
   let htmlPath = path.join(STATIC_DIR, decodeURIComponent(pathname));
   const htmlPaths = getHtmlPath(htmlPath, path.join(STATIC_DIR, "index.html"));
+
+  console.log("htmlPath:", htmlPaths);
 
   for (const path of htmlPaths) {
     if (fs.existsSync(path)) {
@@ -58,5 +60,5 @@ function getHtmlPath(url: string, fallbackUrl: string) {
   const pathName = url.endsWith("/") ? url.slice(0, -1) : url;
   const urlHtmlPath = `${pathName}.html`;
 
-  return [url, urlHtmlPath, fallbackUrl];
+  return [urlHtmlPath, fallbackUrl];
 }
