@@ -34,8 +34,6 @@ app.get(/(.*)/, async (req, res) => {
   let htmlPath = path.join(STATIC_DIR, decodeURIComponent(pathname));
   const htmlPaths = getHtmlPath(htmlPath, path.join(STATIC_DIR, "index.html"));
 
-  console.log("htmlPath:", htmlPaths);
-
   for (const path of htmlPaths) {
     if (fs.existsSync(path)) {
       htmlPath = path;
